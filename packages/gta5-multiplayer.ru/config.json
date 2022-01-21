@@ -1,0 +1,11 @@
+{
+  "":"Set advert repeat interval in seconds",
+  "interval": 60,
+  "":"Add adverts down below",
+  "adverts": [
+	"<font color='#FFA500'>============ [ Объявления ] ============</font><br>Мы Вконтакте: <font color='green'>vk.com/gta5_ragemp</font><br>Сайт: <font color='green'>GTA5-MULTIPLAYER.RU</font>",
+    "Данный сервер скачан с GTA5-MULTIPLAYER.RU",
+    "Хочешь создай свой сервер на RAGE Multiplayer? Заходи на GTA5-MULTIPLAYER.RU",
+	"Готовые сервера, скрипты, модели, плагины, маппинг и многое другое на GTA5-MULTIPLAYER.RU"
+  ]
+}
