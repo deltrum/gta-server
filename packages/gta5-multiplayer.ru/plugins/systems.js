@@ -1,4 +1,4 @@
-var registeredEvents = [];
+let registeredEvents = [];
 
 console.log('\nLoading systems:'); 
 

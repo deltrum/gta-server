@@ -8,7 +8,7 @@ require('./plugins/ad_manager.js');
 
 const mysql = require("mysql");
 
-var hours = new Date().getHours();
+let hours = new Date().getHours();
 
 mp.world.weather = "EXTRA";
 global.launchStage = {
@@ -279,8 +279,8 @@ game.vehicles.forEach((veh, key) => {
 	arrVeh.forEach(attr => { vehicle.customData[attr[0]] = attr[1]; });
 });
 
-var timer15minutes = 600;
-var timer1minutes = 60;
+let timer15minutes = 600;
+let timer1minutes = 60;
 
 setInterval(function(){
 	try {

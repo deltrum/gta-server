@@ -68,7 +68,7 @@
 		if (player.customData.person_summon_cars == 1)
 		{
 			console.log("1 there");
-			mp.vehicles.forEach.forEach(car => { 
+			mp.vehicles.forEach(car => {
 				if(car.customData.owner != undefined && car.customData.owner == name)
 				{
 					console.log("removing");
@@ -82,7 +82,6 @@
 								break;
 			case "timeout":		console.log("[" + new Date().getHours() + ":" + new Date().getMinutes() + "] " + name + " timeout.");
 								break;
-				break;
 			case "kicked":		console.log("[" + new Date().getHours() + ":" + new Date().getMinutes() + "] " + name + " kicked. Reason: " + reason + ".");
 								break;		
 		}

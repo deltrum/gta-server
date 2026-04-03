@@ -30,7 +30,6 @@ function login(player)
 				if(!isNaN(parseInt(rows[0].deaths))) player.customData.deaths = parseInt(rows[0].deaths);
 				if(!isNaN(parseInt(rows[0].phone))) player.customData.phone.number = parseInt(rows[0].phone);
 				if(!isNaN(parseInt(rows[0].bank))) player.customData.bank = parseInt(rows[0].bank);
-				if(!isNaN(parseInt(rows[0].phone))) player.customData.phone.number = parseInt(rows[0].phone);
 				if(!isNaN(parseInt(rows[0].offense))) player.customFunc.setWantedLvl(rows[0].offense);
 				if(!isNaN(parseInt(rows[0].mute))) player.customData.mute = parseInt(rows[0].mute);
 				if(!isNaN(parseInt(rows[0].ban))) player.customData.ban = parseInt(rows[0].ban);
@@ -67,8 +66,6 @@ module.exports =
 {
 	"reg" : (player, name, password, email, personage) =>
 	{
-		console.log(name, password, email);
-		console.log(personage);
 		if(player.customFunc.testFloodEvent("reg")) {
 			player.call("setGui", "reg");
 			console.log("1 - " + name)

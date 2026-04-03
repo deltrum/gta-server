@@ -1,6 +1,8 @@
 const Discord = require('discord.js');
 const client = new Discord.Client();
 
+const DISCORD_BOT_TOKEN = process.env.DISCORD_BOT_TOKEN || 'YOUR_BOT_TOKEN_HERE';
+
 client.on('ready', () => {
 	console.log('\nDiscord bot started!');
 }); 
@@ -44,11 +46,11 @@ client.on('message', message => {
 	})
 	warehouses += "```";
 	message.reply(warehouses);
-  } else if (message.content() === '!save') {
+  } else if (message.content === '!save') {
 		if (message.author.id === "213949252701782016")
 		{
 			console.log("[" + new Date().getHours() + ":" + new Date().getMinutes() + "] Discord " + message.author.username + " from Save");
-			api.save();
+			API.save();
 			//api.saveUser();
 			message.reply("Сервер сохранен");		
 		}
@@ -63,4 +65,4 @@ client.on('message', message => {
   }  
 });
  
-client.login('NDk4ODQ4NjAwNTM3Njk0MjI4.Dp0YUw.1Nb30B9p_e1yGoOgdVj1GgsIu-k');
+client.login(DISCORD_BOT_TOKEN);

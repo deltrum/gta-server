@@ -1,6 +1,6 @@
 const md5 = require('md5');
 
-var 	STATE_OUTPUT       = 0,
+const 	STATE_OUTPUT       = 0,
         STATE_HTML         = 1,
         STATE_PRE_COMMENT  = 2,
         STATE_COMMENT      = 3,

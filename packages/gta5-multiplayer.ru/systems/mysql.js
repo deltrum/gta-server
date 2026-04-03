@@ -4,7 +4,7 @@ let mysql = module.exports;
 
 console.log('Prepare mysql connect to base...');
 
-var mysql2 = require('mysql');
+const mysql2 = require('mysql');
 
 mysql.connection = mysql2.createConnection({
 	host            : 'localhost',
@@ -24,24 +24,3 @@ mysql.connection.connect(function(err) {
   });
 
 console.log('Loaded mysql data...');
-
-/*
-
-setInterval(function() {
-    mysql.connection.query('select 1', function(err, results) {
-
-    });
-}, 10000);
-
-
-mp.events.addCommand('makeadmin', (player, id) =>  {
-  if(player.admin < 1) return player.outputChatBox("Вы не являетесь !{red}Администратором.");
-  let target = mp.players.at(id);
-  gm.mysql.handle.query('UPDATE accounts SET admin = 1 WHERE username = ?', [1, target.name], function(err, res, row){
-      if(err) console.log(err);
-  });
-  target.admin = 1;
-  player.outputChatBox("Вы !{dodgerblue}назначили"+target.name+"админом.");
-  target.outputChatBox("Вас !{dodgerblue} назначили админом.");
-});
-*/
