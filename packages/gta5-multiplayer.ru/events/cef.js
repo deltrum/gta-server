@@ -1,5 +1,7 @@
 var configure = require('../systems/config.js');
 var mysql = require('../systems/mysql.js');
+var shopItems = require('../configs/shop.json');
+var houseUtils = require('../systems/house-utils.js');
 module.exports =
 {
 	"busFinish" : (player) => {
@@ -49,78 +51,24 @@ module.exports =
 		player.setClothes(11, q, qq, qqq);
 	},
 	"buyShop": (player, item) => {
-		if(player.customFunc.testFloodEvent("buyShop")) return;
-		switch (item) {
-			case "phone":
-				if(player.customFunc.setMoney(-1000))  return player.call("alert", "error" , "У нас недостаточно наличных");
-				let num = Math.floor(Math.random() * 899999 + 100000);
-				player.customData.phone.number = num;
-				player.call("messageShop", "Новый номер: " + String(num));
-				break;
-			case "bar":
-				if(player.customFunc.setMoney(-200)) return player.call("alert", "error" , "У нас недостаточно наличных");
-				player.customData.satiety -= 15;
-				if(player.customData.satiety < 0) player.customData.satiety = 0;
-				player.call("messageShop", "Голод: " + player.customData.satiety + "/100");
-				break;
-			case "sangwich":
-				if(player.customFunc.setMoney(-300)) return player.call("alert", "error" , "У нас недостаточно наличных");
-				player.customData.satiety -= 27;
-				if(player.customData.satiety < 0) player.customData.satiety = 0;
-				player.call("messageShop", "Голод: " + player.customData.satiety + "/100");
-				break;
-			case "hamburger":
-				if(player.customFunc.setMoney(-450)) return player.call("alert", "error" , "У нас недостаточно наличных");
-				player.customData.satiety -= 35;
-				if(player.customData.satiety < 0) player.customData.satiety = 0;
-				player.call("messageShop", "Голод: " + player.customData.satiety + "/100");
-				break;
-			case "burger":
-				if(player.customFunc.setMoney(-500)) return player.call("alert", "error" , "У нас недостаточно наличных");
-				player.customData.satiety -= 45;
-				if(player.customData.satiety < 0) player.customData.satiety = 0;
-				player.call("messageShop", "Голод: " + player.customData.satiety + "/100");
-				break;
-			case "pizza":	
-				if(player.customFunc.setMoney(-800)) return player.call("alert", "error" , "У нас недостаточно наличных");
-				player.customData.satiety -= 70;
-				if(player.customData.satiety < 0) player.customData.satiety = 0;
-				player.call("messageShop", "Голод: " + player.customData.satiety + "/100");
-				break;
-			case "water":
-				if(player.customFunc.setMoney(-100)) return player.call("alert", "error" , "У нас недостаточно наличных");
-				player.customData.dehydration -= 15;
-				if(player.customData.dehydration < 0) player.customData.dehydration = 0;
-				player.call("messageShop", "Жажда: " + player.customData.dehydration + "/100");
-				break;
-			case "juice":
-				if(player.customFunc.setMoney(-200)) return player.call("alert", "error" , "У нас недостаточно наличных");
-				player.customData.dehydration -= 30;
-				if(player.customData.dehydration < 0) player.customData.dehydration = 0;
-				player.call("messageShop", "Жажда: " + player.customData.dehydration + "/100");
-				break;
-			case "cola":
-				if(player.customFunc.setMoney(-250)) return player.call("alert", "error" , "У нас недостаточно наличных");
-				player.customData.dehydration -= 40;
-				if(player.customData.dehydration < 0) player.customData.dehydration = 0;
-				player.call("messageShop", "Жажда: " + player.customData.dehydration + "/100");
-				break;
-			case "beer":
-				if(player.customFunc.setMoney(-400)) return player.call("alert", "error" , "У нас недостаточно наличных");
-				player.customData.dehydration -= 50;
-				if(player.customData.dehydration < 0) player.customData.dehydration = 0;
-				player.call("messageShop", "Жажда: " + player.customData.dehydration + "/100");
-				break;
-			case "vodka":	
-				if(player.customFunc.setMoney(-800)) return player.call("alert", "error" , "У нас недостаточно наличных");
-				player.customData.dehydration -= 50;
-				if(player.customData.dehydration < 0) player.customData.dehydration = 0;
-				player.call("messageShop", "Жажда: " + player.customData.dehydration + "/100");
-				break;
-			default:
-				player.call("alert", "error" , "В магазине отсудствует выбраный товар");
-				break;	
+		if (player.customFunc.testFloodEvent("buyShop")) return;
+		const shopItem = shopItems[item];
+		if (!shopItem) return player.call("alert", "error", "В магазине отсудствует выбраный товар");
+
+		if (player.customFunc.setMoney(-shopItem.price))
+			return player.call("alert", "error", "У нас недостаточно наличных");
+
+		if (shopItem.type === "special" && item === "phone") {
+			let num = Math.floor(Math.random() * 899999 + 100000);
+			player.customData.phone.number = num;
+			player.call("messageShop", "Новый номер: " + String(num));
+			return;
 		}
+
+		player.customData[shopItem.stat] -= shopItem.effect;
+		if (player.customData[shopItem.stat] < 0) player.customData[shopItem.stat] = 0;
+		const label = shopItem.stat === "satiety" ? "Голод" : "Жажда";
+		player.call("messageShop", label + ": " + player.customData[shopItem.stat] + "/100");
 	},
 	"select" : (player, item, text) => 
 	{
@@ -313,78 +261,21 @@ module.exports =
 							}
 						});
 						break;
-			case 61: 
-					if(item !== 0) return ;
-						if (configure.housesgarage[data] >= 1) 
-						{
-							player.customFunc.setDialog(62, "Вход в дом", "", "Дом", "Гараж", 1,"Куда вы желаете зайти?", data);
-						}
-						else 
-						{
-							player.customData.enter_house = configure.housesnumber[data];
-							player.customData.enter_garage = -1;
-							player.dimension = 10000 + configure.housesnumber[data];
-							if(configure.housesrare[data] == 0) {
-								if(configure.housesinterior[data] == 0) {
-									player.position = configure.housesinterior_rare0_pos0;
-								} else if(configure.housesinterior[data] == 1) {
-									player.position = configure.housesinterior_rare0_pos1;
-								}
-							} else if(configure.housesrare[data] >= 1) {
-								if(configure.housesinterior[data] == 0) {
-									player.position = configure.housesinterior_rare2_pos0;
-								} else if(configure.housesinterior[data] == 1) {
-									player.position = configure.housesinterior_rare2_pos1;
-								} else if(configure.housesinterior[data] >= 2) {
-									player.position = configure.housesinterior_rare2_pos2;
-								}
-							}
-							player.call("alert", "success" , "Вы вошли в дом! Для выхода из дома используйте команду (( /exit ))");
-							player.call("alert", "success" , "Похоже это дом под номером #"+configure.housesnumber[data]);
-							player.customData.enter_limit = 1;
-						}
-						break;
-			case 62: 
-					if (item == 0)
-					{
-						player.customData.enter_house = configure.housesnumber[data];
-						player.customData.enter_garage = -1;
-						player.dimension = 10000 + configure.housesnumber[data];
-						if(configure.housesrare[data] == 0) {
-							if(configure.housesinterior[data] == 0) {
-								player.position = configure.housesinterior_rare0_pos0;
-							} else if(configure.housesinterior[data] >= 1) {
-								player.position = configure.housesinterior_rare0_pos1;
-							}
-						} else if(configure.housesrare[data] >= 1) {
-							if(configure.housesinterior[data] == 0) {
-								player.position = configure.housesinterior_rare2_pos0;
-							} else if(configure.housesinterior[data] == 1) {
-								player.position = configure.housesinterior_rare2_pos1;
-							} else if(configure.housesinterior[data] >= 2) {
-								player.position = configure.housesinterior_rare2_pos2;
-							}
-						}
-						player.call("alert", "success" , "Вы вошли в дом! Для выхода из дома используйте команду (( /exit ))");
-						player.call("alert", "success" , "Похоже это дом под номером #"+configure.housesnumber[data]);
-						player.customData.enter_limit = 1;
+			case 61:
+					if (item !== 0) return;
+					if (configure.housesgarage[data] >= 1) {
+						player.customFunc.setDialog(62, "Вход в дом", "", "Дом", "Гараж", 1, "Куда вы желаете зайти?", data);
+					} else {
+						houseUtils.enterHouse(player, data);
 					}
-					else
-					{
-						player.customData.enter_house = -1;
-						player.customData.enter_garage = configure.housesnumber[data];
-						player.dimension = 10000 + configure.housesnumber[data];
-						if(configure.housesgarage[data] == 1) {
-							player.position = new mp.Vector3(parseFloat(173.2903),parseFloat(-1003.6),parseFloat(-99,65707));
-						} else if(configure.housesgarage[data] == 2) {
-							player.position = new mp.Vector3(parseFloat(197.8153),parseFloat(-1002.293),parseFloat(-99,65749));
-						} else if(configure.housesgarage[data] == 3) {
-							player.position = new mp.Vector3(parseFloat(240.1851806640625),parseFloat(-1004.7271728515625),parseFloat(-98.99993896484375));
-						}
-						player.call("alert", "success", "Вы вошли в гараж! Для выхода из гаража используйте команду (( /exit ))");
-						player.customData.enter_limit = 1;
+					break;
+			case 62:
+					if (item == 0) {
+						houseUtils.enterHouse(player, data);
+					} else {
+						houseUtils.enterGarage(player, data);
 					}
-						break;
+					break;
 					
 			default: player.call("alert", "error" , "Меню не найдено!");
 		}

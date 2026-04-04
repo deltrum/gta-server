@@ -1,0 +1,13 @@
+{
+	"phone":     { "price": 1000, "type": "special" },
+	"bar":       { "price": 200,  "type": "food",  "stat": "satiety",     "effect": 15 },
+	"sangwich":  { "price": 300,  "type": "food",  "stat": "satiety",     "effect": 27 },
+	"hamburger": { "price": 450,  "type": "food",  "stat": "satiety",     "effect": 35 },
+	"burger":    { "price": 500,  "type": "food",  "stat": "satiety",     "effect": 45 },
+	"pizza":     { "price": 800,  "type": "food",  "stat": "satiety",     "effect": 70 },
+	"water":     { "price": 100,  "type": "drink", "stat": "dehydration", "effect": 15 },
+	"juice":     { "price": 200,  "type": "drink", "stat": "dehydration", "effect": 30 },
+	"cola":      { "price": 250,  "type": "drink", "stat": "dehydration", "effect": 40 },
+	"beer":      { "price": 400,  "type": "drink", "stat": "dehydration", "effect": 50 },
+	"vodka":     { "price": 800,  "type": "drink", "stat": "dehydration", "effect": 50 }
+}

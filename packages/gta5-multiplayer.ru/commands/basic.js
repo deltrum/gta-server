@@ -26,7 +26,7 @@ module.exports =
 		args.shift();
 		if((text = API.striptags(args.join(" "), "<b><s><u><strong>")) === "") return player.call("alert", "information" , "Используйте: /s [text]");
 		if(player.customFunc.testFloodText(text)) return;
-		mp.players.broadcastInRange(player.position, 50, player.name + "<font color='grey'><b> кричит:</b> " + text +"</font>");
+		mp.players.broadcastInRange(player.position, CONST.RANGE_SHOUT, player.name + "<font color='grey'><b> кричит:</b> " + text +"</font>");
 		
 	},
 	"me": (player, args) =>
@@ -36,7 +36,7 @@ module.exports =
 		args.shift();
 		if((text = API.striptags(args.join(" "), "<b><s><u><strong>")) === "") return player.call("alert", "information" , "Используйте: /me [text]");
 		if(player.customFunc.testFloodText(text)) return;
-		mp.players.broadcastInRange(player.position, 20, "<font color='#c2a2da'><b>"+player.name +" " + text +"</b></font>");
+		mp.players.broadcastInRange(player.position, CONST.RANGE_CHAT, "<font color='#c2a2da'><b>"+player.name +" " + text +"</b></font>");
     },
 	"do": (player, args) =>
     {
@@ -45,7 +45,7 @@ module.exports =
 		args.shift();
 		if((text = API.striptags(args.join(" "), "<b><s><u><strong>")) === "") return player.call("alert", "information" , "Используйте: /do [text]");
 		if(player.customFunc.testFloodText(text)) return;
-		mp.players.broadcastInRange(player.position, 20, "<font color='#DD90FF'><b> " + text +"</font> ("+player.name + ")</b>");
+		mp.players.broadcastInRange(player.position, CONST.RANGE_CHAT, "<font color='#DD90FF'><b> " + text +"</font> ("+player.name + ")</b>");
 	},
 	"try": (player, args) =>
     {
@@ -62,7 +62,7 @@ module.exports =
 		{
 			str = str + "<b><font color='green'>Удачно</font></b>";
 		}
-		mp.players.broadcastInRange(player.position, 20, str);
+		mp.players.broadcastInRange(player.position, CONST.RANGE_CHAT, str);
 	},
 	"w": (player, args) =>
     {
@@ -71,7 +71,7 @@ module.exports =
 		args.shift();
 		if((text = API.striptags(args.join(" "), "<b><s><u><strong>")) === "") return player.call("alert", "information" , "Используйте: /w [text]");
 		if(player.customFunc.testFloodText(text)) return;
-		mp.players.broadcastInRange(player.position, 3, player.name + "<font color='grey'><b> шепчет:</b> " + text +"</font>");
+		mp.players.broadcastInRange(player.position, CONST.RANGE_WHISPER, player.name + "<font color='grey'><b> шепчет:</b> " + text +"</font>");
 	},	
 	"b": (player, args) =>
     {
@@ -80,13 +80,13 @@ module.exports =
 		args.shift();
 		if((text = API.striptags(args.join(" "), "<b><s><u><strong>")) === "") return player.call("alert", "information" , "Используйте: /b [text]");
 		if(player.customFunc.testFloodText(text)) return;
-		mp.players.broadcastInRange(player.position, 20, player.name + ": (( " + text +" ))");
+		mp.players.broadcastInRange(player.position, CONST.RANGE_CHAT, player.name + ": (( " + text +" ))");
 	},
 	"time" : (player) => 
 	{
 		let month = ["января","февраля","марта","апреля", "мая","июня","июля","августа","сентября","октября","ноября","декабря"];
 		const time = "<font color='#c2a2da'><b>"+ player.name +" взглянул(а) на часы</b></font>";
-		mp.players.broadcastInRange(player.position, 20, time);
+		mp.players.broadcastInRange(player.position, CONST.RANGE_CHAT, time);
 		let str = "<b><font color='green'><b>Дата: </font>" +  new Date().getDate() + " " + month[new Date().getMonth()] + " | <font color='green'><b>Время: </font>" + new Date().getHours() + ":" + new Date().getMinutes();
 		if(player.customData.jail !== 0) str += "<br>" + "Вас отпустят через: " + String(API.timeFormat(player.customData.jail)) + " секунд."; 
 		player.outputChatBox(str);
@@ -97,8 +97,8 @@ module.exports =
 		if(args.length !== 2 || isNaN(parseInt(args[1]))) return player.call("alert", "information" , "Используйте: /hi [id]");
  		if((_player = mp.players.at(parseInt(args[1]))) === null) return player.call("alert", "error" , "Неверный ID игрока");
 		if(_player === player) return player.call("alert", "error" , "Вы не можете пожать руку себе");
-		if(!API.radius(5, _player.position, player.position)) return player.call("alert", "error" , "Вы слишком далеко!"); 		
-        mp.players.broadcastInRange(player.position, 20, "<font color='#c2a2da'><b>"+player.name +" пожал(а) руку " + _player.name + "</b></font>");	
+		if(!API.radius(CONST.RANGE_PROXIMITY, _player.position, player.position)) return player.call("alert", "error" , "Вы слишком далеко!"); 		
+        mp.players.broadcastInRange(player.position, CONST.RANGE_CHAT, "<font color='#c2a2da'><b>"+player.name +" пожал(а) руку " + _player.name + "</b></font>");	
 	},
 	"id" : (player, args) => 
 	{
@@ -120,12 +120,12 @@ module.exports =
 	{
 		if(args.length !== 3 || isNaN(parseInt(args[1])) || isNaN(money = parseInt(args[2]))) return player.call("alert", "information" , "Используйте: /pay [id] [money]");
  		if((_player = mp.players.at(parseInt(args[1]))) === null) return player.call("alert", "error" , "Неверный ID игрока");	
-		if(!API.radius(5, _player.position, player.position)) return player.call("alert", "error" , "Вы слишком далеко!"); 		
+		if(!API.radius(CONST.RANGE_PROXIMITY, _player.position, player.position)) return player.call("alert", "error" , "Вы слишком далеко!"); 		
         if(_player === player) return  player.call("alert", "error" , "Вы не можете перевести деньги себе");
 		if(money < 0) return player.call("alert", "error" , "Некорректная сумма");
 		if(player.customFunc.setMoney(-money)) return player.call("alert", "error" , "У вас недостаточно наличных");
 		_player.customFunc.setMoney(money);
-		mp.players.broadcastInRange(player.position, 20, "<font color='#c2a2da'><b>"+player.name +" передал(а) деньги " + _player.name + "</b></font>");
+		mp.players.broadcastInRange(player.position, CONST.RANGE_CHAT, "<font color='#c2a2da'><b>"+player.name +" передал(а) деньги " + _player.name + "</b></font>");
 		_player.call("alert", "success" , "Вам передали $" + money);
 	},
 	"ad" : (player, args) =>
@@ -137,9 +137,9 @@ module.exports =
     {
 		if(args.length !== 2 || isNaN(parseInt(args[1]))) return player.call("alert", "information" , "Используйте: /showpass [id]");
 		if((_player = mp.players.at(parseInt(args[1]))) === null) return player.call("alert", "error" , "Неверный ID игрока");	
-		if(!API.radius(5, _player.position, player.position)) return player.call("alert", "error" , "Вы слишком далеко!"); 
+		if(!API.radius(CONST.RANGE_PROXIMITY, _player.position, player.position)) return player.call("alert", "error" , "Вы слишком далеко!"); 
 		const str = "<font color='#c2a2da'><b>"+player.name +" показал(а) паспорт " + _player.name +"</b></font>";
-        mp.players.broadcastInRange(player.position, 20, str);
+        mp.players.broadcastInRange(player.position, CONST.RANGE_CHAT, str);
 		_player.customFunc.setDialog(1, "Паспорт",  "", "", "Закрыть", 1, player.name + "<br>Организация: " + game.faction[player.customData.member].member + "<br>Должность: " + (game.faction[player.customData.member] != 0 && game.faction[player.customData.member].rank[player.customData.rank-1] || "Отсутствует") + "<br>Работа: " + game.jobs[player.customData.job.id].name + "<br>Уровень розыска: " + player.customData.offense + "<br>Убийств: " + player.customData.kills + "<br>Смертей: " + player.customData.deaths, "");
     },
     "exit": (player, args) =>

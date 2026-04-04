@@ -34,27 +34,27 @@
 			{
 				killer.customData.kills = killer.customData.kills + 1 || 1;
 				player.customData.deaths = player.customData.deaths + 1 || 1;
-				if((killer.customData.member === 1 || killer.customData.member === 6) && player.customData.offense > 0 && killer.id !== player.id)
+				if(API.isPoliceFaction(killer.customData.member) && player.customData.offense > 0 && killer.id !== player.id)
 				{
-					player.customData.jail = 120 * player.customData.offense;
-					player.outputChatBox("<font color='red'><b>Вы были арестованы на: " + String(120 * player.customData.offense) + " секунд. Арестовал: "+ killer.name + ".</b></font>");
-					mp.players.forEach(_player => { if(_player.customData.member === 1 || _player.customData.member === 6) _player.outputChatBox("<b><font color='#FF6347'><< Офицер " + killer.name + " арестовал " + player.name +". >></font></b>"); });	
+					player.customData.jail = CONST.JAIL_TIME_MULTIPLIER * player.customData.offense;
+					player.outputChatBox("<font color='red'><b>Вы были арестованы на: " + String(CONST.JAIL_TIME_MULTIPLIER * player.customData.offense) + " секунд. Арестовал: "+ killer.name + ".</b></font>");
+					mp.players.forEach(_player => { if(API.isPoliceFaction(_player.customData.member)) _player.outputChatBox("<b><font color='#FF6347'><< Офицер " + killer.name + " арестовал " + player.name +". >></font></b>"); });
 					killer.customFunc.setWantedLvl(0);
-				} 
-				else if((killer.customData.member !== 1 && killer.customData.member !== 6 && killer.customData.member !== 2) && killer.customData.jail === 0 && killer.id !== player.id)
+				}
+				else if(!API.isPoliceFaction(killer.customData.member) && killer.customData.member !== CONST.FACTION_ARMY && killer.customData.jail === 0 && killer.id !== player.id)
 				{
-					if(player.customData.member === 1 || player.customData.member === 6)
+					if(API.isPoliceFaction(player.customData.member))
 					{
 						killer.outputChatBox("<font color='red'><b>Вы совершили преступление: Убийство полицейского [+3]</b></font>");
-						mp.players.forEach(_player => { if(_player.customData.member === 1 || _player.customData.member === 6) _player.outputChatBox("<b><font color='#FEBC41'>[R] Cообщает: Диспечер. Преступление: Убийство полицейского. Подозреваемый: " + killer.name + "[+3]</font></b>"); });	
+						mp.players.forEach(_player => { if(API.isPoliceFaction(_player.customData.member)) _player.outputChatBox("<b><font color='#FEBC41'>[R] Cообщает: Диспечер. Преступление: Убийство полицейского. Подозреваемый: " + killer.name + "[+3]</font></b>"); });
 						killer.customFunc.setWantedLvl(3);
-										
+
 					}
 					else
 					{
 						killer.outputChatBox("<font color='red'><b>Вы совершили преступление: Убийство [+1]</b></font>");
-						mp.players.forEach(_player => { if(_player.customData.member === 1 || _player.customData.member === 6) _player.outputChatBox("<b><font color='#FEBC41'>[R] Cообщает: Диспечер. Преступление: Убийство. Подозреваемый: " + killer.name + "[+1]</font></b>"); });	
-						killer.customFunc.setWantedLvl(1);					
+						mp.players.forEach(_player => { if(API.isPoliceFaction(_player.customData.member)) _player.outputChatBox("<b><font color='#FEBC41'>[R] Cообщает: Диспечер. Преступление: Убийство. Подозреваемый: " + killer.name + "[+1]</font></b>"); });
+						killer.customFunc.setWantedLvl(1);
 					}
 				}
 			}
@@ -85,14 +85,7 @@
 			case "kicked":		console.log("[" + new Date().getHours() + ":" + new Date().getMinutes() + "] " + name + " kicked. Reason: " + reason + ".");
 								break;		
 		}
-		if(player.customData.auth){
-			global.pool.query("UPDATE `user` SET `password_hash` = ?, `updated_at` = ?, `ip` = ?, `member` = ?, `rank` = ?, `job` = ?, `admin` = ?, `exp` = ?, `kills` = ?, `deaths` = ?, `phone` = ?, `bank` = ?, `offense` = ?, `mute` = ?, `ban` = ?, `jail` = ?, `dehydration` = ?, `satiety` = ?, `narcomaniac` = ?, `items` = ?, `email` = ?,  `personage` = ? WHERE `username` = ?", [String(player.customData.password), parseInt(Math.round((new Date().getTime())/1000)), String(ip), parseInt(player.customData.member), parseInt(player.customData.rank), parseInt(player.customData.job.id), parseInt(player.customData.admin), parseInt(player.customData.exp), parseInt(player.customData.kills), parseInt(player.customData.deaths), String(JSON.stringify(player.customData.phone)), parseInt(player.customData.bank), parseInt(player.customData.offense), parseInt(player.customData.mute), parseInt(player.customData.ban), parseInt(player.customData.jail), parseInt(player.customData.dehydration), parseInt(player.customData.satiety), parseInt(player.customData.narcomaniac), String(JSON.stringify(player.customData.item)), String(player.customData.email), String(JSON.stringify(player.customData.personage)), String(name)], function (error, rows, fields) { 
-				if(error) {
-					console.log('Error table "user"');
-					throw error;
-				}
-			});
-		}
+		API.savePlayerToDb(player);
 	},
 	"playerChat": (player, text) =>
 	{
@@ -130,6 +123,6 @@
 		{
 			str = `${player.name}: ${text}`;
 		}
-		mp.players.broadcastInRange(player.position, 20, str);
+		mp.players.broadcastInRange(player.position, CONST.RANGE_CHAT, str);
 	}
 };
