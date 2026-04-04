@@ -1,6 +1,9 @@
-﻿var fs = require('fs'), path = require('path'); 
+﻿"use strict";
 
-var registeredCommands = {};
+const fs = require('fs');
+const path = require('path'); 
+
+let registeredCommands = {};
 
 setTimeout(() =>
 {	

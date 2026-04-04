@@ -1,3 +1,5 @@
+"use strict";
+
 const md5 = require("md5");
 
 
@@ -27,7 +29,7 @@ module.exports =
 	"updatePasswordControl" : (player, password) =>
 	{
 		if(player.customFunc.testFloodEvent("updatePasswordControl")) return;
-		password = password.replace( /"/g, "'" ).replace(/^\s\s*/, '').replace(/\s\s*$/, '');
+		password = password.replace(/"/g, "'").trim();
 		if(password.length < 6) return player.call("alert", "error" , "Длина пароль должна быть не меньше 6 символов");
 		player.customData.password = md5(password);
 		player.call("alert", "success" , "Пароль успешно изменен.");		
@@ -40,7 +42,7 @@ module.exports =
 	"updateEmailControl" : (player, email) =>
 	{
 		if(player.customFunc.testFloodEvent("updateEmailControl")) return;
-        email = email.replace( /"/g, "'" ).replace(/^\s\s*/, '').replace(/\s\s*$/, '');
+        email = email.replace(/"/g, "'").trim();
         if(!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(email)) return window.setAlert("error", "Некорректный адрес электронной почты. Пример: admin@ren-play.ru");
 		player.customData.email = email;
 		player.call("alert", "success" , "Почта успешно изменен.");
@@ -54,7 +56,7 @@ module.exports =
 	"helperControl": (player, message) =>
 	{
 		if(player.customFunc.testFloodEvent("helperControl")) return;
-		message = message.replace( /"/g, "'" ).replace(/^\s\s*/, '').replace(/\s\s*$/, '');
+		message = message.replace(/"/g, "'").trim();
 		if(message === "") return player.call("alert", "error" , "Вы не можете отправить пустую строку");
 		player.outputChatBox("<font color='#F5DEB3'><b>Жалоба: </font>" + message + "<br><font color='#F5DEB3'>Ваша жалоба была отправлена администрации сервера</b></font>");
 		mp.players.forEach(_player => { if(_player.customData.admin > 0) { _player.outputChatBox("<font color='#F5DEB3'><b>Жалоба от " + player.name + " [" + player.id + "]:</font> " + message + "</b>"); } });	

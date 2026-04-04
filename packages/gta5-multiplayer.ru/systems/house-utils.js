@@ -1,6 +1,6 @@
 "use strict";
 
-var configure = require('./config.js');
+const configure = require('./config.js');
 
 module.exports = {
 	getInteriorPosition: function (data) {

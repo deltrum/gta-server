@@ -1,5 +1,7 @@
-var configure = require('./config.js');
-var mysql = require('./mysql.js');
+"use strict";
+
+const configure = require('./config.js');
+const { pool } = require('./mysql.js');
 
 
 
@@ -127,7 +129,7 @@ module.exports =
 					} else if(shape == configure.housesgaragecolshapes[i]) {
 								for(let car = 0; car < 7; car++) {
 									if(player.customData.person_car[car] == player.vehicle) {
-										mysql.connection.query("SELECT * FROM cars WHERE owner = ? WHERE id = ?", [player.name], function(errcars, selectcars) {
+										pool.query("SELECT * FROM cars WHERE owner = ? WHERE id = ?", [player.name], function(errcars, selectcars) {
 											let max_car_pos = JSON.parse(selectcars[car].max_cars_pos);
 											player.position = new mp.Vector3(parseFloat(max_car_pos[0].x), parseFloat(max_car_pos[0].y), parseFloat(max_car_pos[0].z));
 									});
@@ -141,7 +143,7 @@ module.exports =
 			if(player.vehicle && player.seat < 0) {
 					if(player.customData.enter_garage >= 0) {
 						if(player.vehicle.owner == player.name) {
-								mysql.connection.query("SELECT * FROM houses WHERE owner = ?", [player.name], function(err, selecthouse) {
+								pool.query("SELECT * FROM houses WHERE owner = ?", [player.name], function(err, selecthouse) {
 									player.vehicle.position = new mp.Vector3(parseFloat(selecthouse[0].garage_enter_pos_x),parseFloat(selecthouse[0].garage_enter_pos_y),parseFloat(selecthouse[0].garage_enter_pos_z));
 									player.customData.enter_limit = 1;
 									player.customData.enter_garage = -1;

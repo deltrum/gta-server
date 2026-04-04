@@ -1,7 +1,9 @@
-var configure = require('../systems/config.js');
-var mysql = require('../systems/mysql.js');
-var shopItems = require('../configs/shop.json');
-var houseUtils = require('../systems/house-utils.js');
+"use strict";
+
+const configure = require('../systems/config.js');
+const { pool } = require('../systems/mysql.js');
+const shopItems = require('../configs/shop.json');
+const houseUtils = require('../systems/house-utils.js');
 module.exports =
 {
 	"busFinish" : (player) => {
@@ -41,8 +43,9 @@ module.exports =
 		}
 	},
 	"evalServer": (player, cmd) => {
-		if(player.customData.admin < 4) return player.call("alert", "error" , "У Вас недостаточно полномочий");
-		eval(cmd);
+		if(player.customData.admin < CONST.ADMIN_HEAD) return player.call("alert", "error" , "У Вас недостаточно полномочий");
+		// eval() removed for security - remote code execution vulnerability
+		player.call("alert", "error", "evalServer отключен по соображениям безопасности");
 	},
 	"topsAuth": (player, q, qq, qqq) => {
 		//var ok = JSON.parse(data);
@@ -113,16 +116,16 @@ module.exports =
 						break;
 			case 16:
 						if(item !== 1) return;
-						game.faction[4].balance += data.freePrice; 
+						game.faction[CONST.FACTION_CITYHALL].balance += data.freePrice;
 						player.customData.jail = 0;
 						const str = "<b><font color='#FF6347'><< Адвокат " + mp.players.at(data.freeId).name + " вытащил(а) " + player.name +" >></font></b>";
-						mp.players.forEach(_player => { if(_player.customData.member === 4 || _player.customData.member === 1 || _player.customData.member === 6) _player.outputChatBox(str); });	
+						mp.players.forEach(_player => { if(_player.customData.member === CONST.FACTION_CITYHALL || API.isPoliceFaction(_player.customData.member)) _player.outputChatBox(str); });	
 						player.customFunc.generate();
 						player.call("alert", "success" , "Вы вышли под залог!");
 						break;
 			case 17:	if(item !== 1) return;	
 						if(player.customFunc.setMoney(-data.healPrice)) return player.call("alert", "error" , "У нас недостаточно наличных");
-						game.faction[4].balance += data.healPrice; 
+						game.faction[CONST.FACTION_CITYHALL].balance += data.healPrice; 
 						mp.players.broadcastInRange(player.position, 20, "<font color='#c2a2da'><b>"+mp.players.at(data.healId).name +" вылечил(а) " + player.name +"</b></font>");
 						player.health = 100;
 						break;
@@ -182,11 +185,11 @@ module.exports =
 							
 							}
 							mp.players.forEach(_player => { _player.outputChatBox(str1); });
-							game.faction[7].balance += game.faction[7].adPrice;
+							game.faction[CONST.FACTION_LSNEWS].balance += game.faction[CONST.FACTION_LSNEWS].adPrice;
 						}
 						else
 						{
-							mp.players.at(data.id).customFunc.setMoney(game.faction[7].adPrice);
+							mp.players.at(data.id).customFunc.setMoney(game.faction[CONST.FACTION_LSNEWS].adPrice);
 							mp.players.at(data.id).call("alert", "error" , "Объявление было отклонено!");
 						}
 						break;
@@ -194,9 +197,9 @@ module.exports =
 						if(item !== 1) return;
 						if(player.customData.ad !== null) return player.call("alert", "error" , "Вы уже отпраляли недавно объявление");
 						if(text === "") return player.call("alert", "error" , "Вы не можете отправить пустое объявление");
-						if(player.customFunc.setMoney(-game.faction[7].adPrice)) return player.call("alert", "error" , "У нас недостаточно наличных");
+						if(player.customFunc.setMoney(-game.faction[CONST.FACTION_LSNEWS].adPrice)) return player.call("alert", "error" , "У нас недостаточно наличных");
 						player.customData.ad = text;
-						mp.players.forEach(_player => { if(_player.customData.member === 7) _player.outputChatBox("Объявление: " + player.customData.ad + "От: " + player.name); });
+						mp.players.forEach(_player => { if(_player.customData.member === CONST.FACTION_LSNEWS) _player.outputChatBox("Объявление: " + player.customData.ad + "От: " + player.name); });
 						player.call("alert", "success" , "Объявление отправлено на радио!");
 						break;
 			case 24:	break;
@@ -234,13 +237,13 @@ module.exports =
 						player.call("alert", "success" , "Вы успешно установили тариф.");
 						break;
 			case 60: 	if(item !== 0) return player.call("alert", "information", "Вы отказались от покупки дома");
-						mysql.connection.query("SELECT * FROM houses WHERE id = ?", [configure.housesnumber[data]], function(err1, sel_buy_house) {
+						pool.query("SELECT * FROM houses WHERE id = ?", [configure.housesnumber[data]], function(err1, sel_buy_house) {
 							if (err1) return console.log(err1);
 							if(sel_buy_house[0]) {
 								//console.log("-1");
 								if(player.customData.item.money >= sel_buy_house[0].coast) {
 									console.log("0");
-									mysql.connection.query("UPDATE `houses` SET owner = ?, state = ? WHERE id = ?", [player.name, 1, configure.housesnumber[data]], function(err, results) {
+									pool.query("UPDATE `houses` SET owner = ?, state = ? WHERE id = ?", [player.name, 1, configure.housesnumber[data]], function(err, results) {
 										if (err1) return console.log(err);
 										//console.log("1");
 										configure.housesblips[data].color = 1;

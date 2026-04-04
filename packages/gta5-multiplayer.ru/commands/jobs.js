@@ -1,11 +1,15 @@
+"use strict";
+
 module.exports =
 {
 //---------------------------------------- [ Работы ] ----------------------------------------
 	"repair" : (player, args) =>
 	{
 		if(player.customData.job.id !== 1) return player.call("alert", "error" , "Вы не механик.");
-		if(args.length !== 3 || isNaN(parseInt(args[1])) || isNaN(money = parseInt(args[2]))) return player.call("alert", "information" , "Используйте: /repair [id] [price]"); 
-		if((_player = mp.players.at(parseInt(args[1]))) === null) return player.call("alert", "error" , "Неверный ID игрока");
+		const money = parseInt(args[2]);
+		if(args.length !== 3 || isNaN(parseInt(args[1])) || isNaN(money)) return player.call("alert", "information" , "Используйте: /repair [id] [price]");
+		const _player = mp.players.at(parseInt(args[1]));
+		if(_player === null) return player.call("alert", "error" , "Неверный ID игрока");
 		if(player === _player) return player.call("alert", "error" , "Вы указали свой ID");
 		if(player.vehicle === undefined) return player.call("alert", "error" , "Вы не в машине");
 		if(player.vehicle.customData.job !== player.customData.job.id) return player.call("alert", "error" , "Вы не в служебной машине");
@@ -18,8 +22,9 @@ module.exports =
 	"refill" : (player, args) =>
 	{
 		if(player.customData.job.id !== 1) return player.call("alert", "error" , "Вы не механик.");
-		if(args.length !== 2 || isNaN(parseInt(args[1]))) return player.call("alert", "information" , "Используйте: /refill [id]"); 
-		if((_player = mp.players.at(parseInt(args[1]))) === null) return player.call("alert", "error" , "Неверный ID игрока");
+		if(args.length !== 2 || isNaN(parseInt(args[1]))) return player.call("alert", "information" , "Используйте: /refill [id]");
+		const _player = mp.players.at(parseInt(args[1]));
+		if(_player === null) return player.call("alert", "error" , "Неверный ID игрока");
 		if(player === _player) return player.call("alert", "error" , "Вы указали свой ID");		
 		if(player.vehicle === undefined) return player.call("alert", "error" , "Вы не в машине");  
 		if(player.vehicle.customData.job !== player.customData.job.id) return player.call("alert", "error" , "Вы не в служебной машине"); 	

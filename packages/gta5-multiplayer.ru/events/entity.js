@@ -1,3 +1,5 @@
+"use strict";
+
 const initPlayerData = require('../plugins/player-defaults.js');
 const initPlayerFunctions = require('../plugins/player-functions.js');
 

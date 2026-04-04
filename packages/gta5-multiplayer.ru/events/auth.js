@@ -1,3 +1,5 @@
+"use strict";
+
 const md5 = require("md5");
 
 function testLaunchStage(player) {
@@ -39,7 +41,7 @@ function login(player)
 				if(!isNaN(parseInt(rows[0].narcomaniac))) player.customData.narcomaniac = parseInt(rows[0].narcomaniac);
 				player.customData.item = rows[0].items == "" ? {} : JSON.parse(rows[0].items)
 				player.call("login", player.customData.admin, player.customData.item.money !== undefined ? player.customData.item.money : 0);
-				if(player.customData.member === 1 || player.customData.member === 6) {
+				if(API.isPoliceFaction(player.customData.member)) {
 					player.call("setPoliceWanted", JSON.stringify(API.getWantedList()));
 					player.call("setPoliceMembers", player.customData.rank === game.faction[player.customData.member].rank.length ? true : false, JSON.stringify(API.getMemberList(player.customData.member)));
 					player.call("setPoliceStat", JSON.stringify(API.getStatList(player.customData.member)));
@@ -77,7 +79,7 @@ module.exports =
 			return;
 		}
 		if(player.customData.auth) return  player.call("alert", "warning", "Вы уже авторизовались.");	
-		name = name.replace( /"/g, "'" ).replace(/^\s\s*/, '').replace(/\s\s*$/, '');
+		name = name.replace(/"/g, "'").trim();
 		if(name.length < 3 || name.length > 30)
 		{
 			player.call("alert", "error", "Длина игрового имени должна быть не меньше 3 и не больше 32 символов");
@@ -89,20 +91,20 @@ module.exports =
 			player.call("setGui", "reg");
 			return;
 		}
-		password = password.replace( /"/g, "'" ).replace(/^\s\s*/, '').replace(/\s\s*$/, '');
+		password = password.replace(/"/g, "'").trim();
 		if(password.length < 6)	{
 			player.call("alert", "error", "Длина пароль должна быть не меньше 6 символов");
 			player.call("setGui", "reg");
 			return;
 		}
-		email = email.replace( /"/g, "'" ).replace(/^\s\s*/, '').replace(/\s\s*$/, '');
+		email = email.replace(/"/g, "'").trim();
 		if(email !== "" && !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(email)) {
 			player.call("alert", "error", "Некорректный адрес электронной почты. Пример: gta5-multiplayer@gmail.com");
 			player.call("setGui", "reg");
 			return;
 		}
 		try {	
-			personageArr = JSON.parse(personage);
+			const personageArr = JSON.parse(personage);
 			if(personageArr.length !== 4 || personageArr[1].length !== 4 || personageArr[2].length !== 20 || personageArr[3].length !== 4) {
 				player.call("alert", "error", "Вы были кикнуты с сервера. Причина: Некорректная конфигурация персонажа");
 				return player.kick("Некорректная конфигурация персонажа!");		
@@ -207,7 +209,7 @@ module.exports =
 			player.call("setGui", "login");
 			return;
 		}
-		password = password.replace( /"/g, "'" ).replace(/^\s\s*/, '').replace(/\s\s*$/, '');
+		password = password.replace(/"/g, "'").trim();
 		if(password.length < 6)	{
 			player.call("alert", "error", "Длина пароль должна быть не меньше 6 символов");
 			player.call("setGui", "login");

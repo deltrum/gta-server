@@ -1,3 +1,5 @@
+"use strict";
+
 module.exports =
 {
 	"playerStartEnterVehicle" : (player, vehicle, seat) =>
@@ -38,7 +40,8 @@ module.exports =
 	},	
 	"updateFuel" : (player, id, fuel) =>
 	{
-		if((vehicle = mp.vehicles.at(parseInt(id))) !== null) {
+		const vehicle = mp.vehicles.at(parseInt(id));
+		if(vehicle !== null) {
 			if(parseInt(fuel) <= 0) {
 				player.call("alert", "error", "Бензин закончился!");
 				vehicle.engine = false;

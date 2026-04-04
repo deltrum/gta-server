@@ -357,7 +357,8 @@ module.exports =
     {
 		if(!API.isPoliceFaction(player.customData.member)) return player.call("alert", "error" , "Вы не работаете в полиции.");
 		if(args.length < 2 || isNaN(parseInt(args[1]))) return player.call("alert", "information" , "Используйте: /arrest [id]"); 
-		if((_player = mp.players.at(parseInt(args[1]))) === null) return player.call("alert", "error" , "Неверный ID игрока");
+		const _player = mp.players.at(parseInt(args[1]));
+		if(_player === null) return player.call("alert", "error" , "Неверный ID игрока");
 		if(_player === player) return player.call("alert", "error" , "Вы указали свой ID"); 
 		if(!API.radius(CONST.RANGE_PROXIMITY, _player.position, player.position)) return player.call("alert", "error" , "Вы слишком далеко!"); 
 		if(_player.customData.offense === 0) return player.call("alert", "error" , "Данный человек не находится в розыке");

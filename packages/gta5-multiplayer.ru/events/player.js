@@ -1,7 +1,9 @@
-﻿module.exports =
+﻿"use strict";
+
+module.exports =
 {
 	"playerJoin" : player =>
-	{	
+	{
 		console.log("[" + new Date().getHours() + ":" + new Date().getMinutes() + "] " + player.name + " join.");
 	},
 	"playerCreateWaypoint" : (player,position) =>
@@ -63,11 +65,9 @@
 	},
 	"playerQuit" : (player, reason, kickReason) =>
 	{
-		let name = player.name;
-		let ip = player.ip;
+		const name = player.name;
 		if (player.customData.person_summon_cars == 1)
 		{
-			console.log("1 there");
 			mp.vehicles.forEach(car => {
 				if(car.customData.owner != undefined && car.customData.owner == name)
 				{

@@ -1,50 +1,5 @@
-/*		if(player.customData.phone.call !== -1) 
-		{
-			player.call("phoneHistoryCall", 0);
-			mp.players.at(player.customData.phone.call).customData.phone.call("phoneHistoryCall", 0);
-			mp.players.at(player.customData.phone.call).customData.phone.call = -1;
-			mp.players.at(player.customData.phone.call).customData.phone.talk = 0;
-			mp.players.at(player.customData.phone.call).customData.timer.call = 0;
-			player.customData.phone.call = -1;				
-			player.customData.phone.talk = 0;
-			player.customData.timer.call = 0;
-		}
-		if(player.customData.phone.call !== -1) 
-		{
-			player.call("phoneHistoryCall", 0);
-			mp.players.at(player.customData.phone.call).customData.phone.call("phoneHistoryCall", 0);
-			mp.players.at(player.customData.phone.call).customData.phone.call = -1;
-			mp.players.at(player.customData.phone.call).customData.phone.talk = 0;
-			mp.players.at(player.customData.phone.call).customData.timer.call = 0;
-			player.customData.phone.call = -1;				
-			player.customData.phone.talk = 0;
-			player.customData.timer.call = 0;
-		}
-		if(player.customData.phone.call !== -1 && player.customData.phone.call) {
-			str = player.name + "[Телефон]: " + text;
-			mp.players.at(player.customData.phone.call).outputChatBox(str);
-			mp.players.broadcastInRange(player.position, 20, str);
-		} 
-		else
-		{
-		if(player.customData.timer.call === 0 && player.customData.phone.call !== -1) 
-		{
-			player.call("phoneHistoryCall", 1);
-			mp.players.at(player.customData.phone.call).call("phoneHistoryCall", 1);
-			mp.players.at(player.customData.phone.call).customData.phone.call = -1;
-			player.customData.phone.call = -1;
-		}
-		if(player.customData.phone.call !== -1 && (player.customData.phone.not || player.customData.phone.online)) {
-			player.call("phoneHistoryCall", 0);
-			mp.players.at(player.customData.phone.call).customData.phone.call("phoneHistoryCall", 0);
-			mp.players.at(player.customData.phone.call).customData.phone.call = -1;
-			mp.players.at(player.customData.phone.call).customData.phone.talk = 0;
-			mp.players.at(player.customData.phone.call).customData.timer.call = 0;
-			player.customData.phone.call = -1;				
-			player.customData.phone.talk = 0;
-			player.customData.timer.call = 0;			
-		}
-		*/
+"use strict";
+
 module.exports =
 {
 	"phoneSignal" : (player) =>
@@ -68,11 +23,11 @@ module.exports =
 		let message = API.striptags(text, "<b><s><u><strong>");
 		if(message === "") return setAlert("error", "Вы не можете отправить пустое сообщение");
 		if(parseInt(number) === 111)	{
-			if(player.customData.phone.balance-game.faction[7].smsPrice < 0) return player.call("alert", "error" , "У вас недостаточно средств на балансе телефона.");
-			player.customData.phone.balance -= game.faction[7].smsPrice;
-			game.faction[7].balance += game.faction[7].smsPrice;
+			if(player.customData.phone.balance-game.faction[CONST.FACTION_LSNEWS].smsPrice < 0) return player.call("alert", "error" , "У вас недостаточно средств на балансе телефона.");
+			player.customData.phone.balance -= game.faction[CONST.FACTION_LSNEWS].smsPrice;
+			game.faction[CONST.FACTION_LSNEWS].balance += game.faction[CONST.FACTION_LSNEWS].smsPrice;
 			let str = "<font color='#FDE640'><b>[Эфир]: " + message +" Отправитель: " + player.name + " Тел.: " + player.customData.phone.number + "</b></font><br>";		
-			return player.call("addMessagePhone", 111, game.faction[7].member, "right", message);
+			return player.call("addMessagePhone", 111, game.faction[CONST.FACTION_LSNEWS].member, "right", message);
 		}
 		const number_id = API.number(parseInt(number));
 		if(number_id === -1) return player.call("alert", "warning" , "Сообщение не доставлено. Абонент недоступен!");
@@ -80,7 +35,7 @@ module.exports =
 		//if(player.id === number_id) return player.call("alert", "error" , "Сообщение не доставлено. Вы указали свой номер!");
 		if(player.customData.phone.balance-10 < 0) return player.call("alert", "error" , "У вас недостаточно средств на балансе телефона.");
 		player.customData.phone.balance -= 10;
-		game.faction[4].balance += 10;
+		game.faction[CONST.FACTION_CITYHALL].balance += 10;
 		player.call("addMessagePhone", parseInt(number), mp.players.at(number_id).name, "right", message);
 		mp.players.at(number_id).call("addMessagePhone", player.customData.phone.number, player.name, "left", message);
 	},
@@ -129,7 +84,7 @@ module.exports =
 		if(player.customData.phone.call === -1) return player.call("alert", "error" , "Вам никто не звонит!");
 		if(player.customData.phone.talk) return player.call("alert", "error" , "Вы уже разговариваете..");
 		if(mp.players.at(player.customData.phone.call).customData.phone.phone.balance-50 > 0) mp.players.at(player.customData.phone.call).customData.phone.phone.balance -= 50;
-		game.faction[4].balance += 50;
+		game.faction[CONST.FACTION_CITYHALL].balance += 50;
 		player.customData.phone.talk = 1;
 		player.customData.timer.call = 0;
 		player.call("phoneTalk");

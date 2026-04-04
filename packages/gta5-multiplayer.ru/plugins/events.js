@@ -1,11 +1,16 @@
+"use strict";
+
+const fs = require('fs');
+const path = require('path');
+
 let registeredEvents = [];
 
-console.log('\nLoading events:'); 
+console.log('\nLoading events:');
 
 fs.readdirSync(path.resolve(__dirname, '../events')).forEach(src =>
 {
 	process.stdout.write('\t\"' + src + '\"');
-	registeredEvents = registeredEvents.concat(require('../events/' + src)); 
+	registeredEvents = registeredEvents.concat(require('../events/' + src));
 	console.log(" - OK");
 });
 

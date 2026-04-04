@@ -1,6 +1,10 @@
 "use strict";
 
 module.exports = {
+	"sanitizeInput": (str) => {
+		return str.replace(/"/g, "'").replace(/^\s+/, '').replace(/\s+$/, '');
+	},
+
 	"timeFormat": (time) => {
 		let hrs = ~~(time / 3600);
 		let mins = ~~((time % 3600) / 60);
@@ -22,16 +26,8 @@ module.exports = {
 		return routeList;
 	},
 
-	"getList": (list) => {
-		let relist = [];
-		game.route.forEach((item) => {
-			relist.push(item.name + " | " + (item.price !== undefined && item.price || ""));
-		});
-		return relist;
-	},
-
 	"number": (number) => {
-		var id = -1;
+		let id = -1;
 		mp.players.forEach(_player => {
 			if (_player.customData.phone.number === parseInt(number) && _player.customData.phone.number !== 0) {
 				id = _player.id;
@@ -42,11 +38,10 @@ module.exports = {
 	},
 
 	"radius": (radi, pos, _pos) => {
-		pos.x -= _pos.x;
-		pos.y -= _pos.y;
-		pos.z -= _pos.z;
-		if (((pos.x < radi) && (pos.x > -radi)) && ((pos.y < radi) && (pos.y > -radi)) && ((pos.z < radi) && (pos.z > -radi))) return true;
-		return false;
+		const dx = pos.x - _pos.x;
+		const dy = pos.y - _pos.y;
+		const dz = pos.z - _pos.z;
+		return (dx < radi && dx > -radi) && (dy < radi && dy > -radi) && (dz < radi && dz > -radi);
 	},
 
 	"getRandomInt": (min, max) => {

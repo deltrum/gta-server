@@ -7,7 +7,7 @@ require("./plugins/events.js");
 require("./plugins/systems.js");
 require('./plugins/ad_manager.js');
 
-const mysql = require("mysql");
+const { pool } = require('./systems/mysql.js');
 
 mp.world.weather = "EXTRA";
 global.launchStage = {
@@ -75,27 +75,7 @@ mp.players.call = function () {
 
 require('./plugins/discord.js');
 
-global.pool = mysql.createPool({
-	connectionLimit: 10,
-	waitForConnections: false,
-	host: 'localhost',
-	user: 'root',
-	password: '',
-	database: 'gta5-multiplayer.ru'
-});
-
-global.pool.on('acquire', function (connection) {
-	console.log('Connection %d acquired', connection.threadId);
-});
-global.pool.on('connection', function (connection) {
-	console.log('New connection %d', connection.threadId);
-});
-global.pool.on('enqueue', function () {
-	console.log('Waiting for available connection slot');
-});
-global.pool.on('release', function (connection) {
-	console.log('Connection %d released', connection.threadId);
-});
+global.pool = pool;
 
 // World initialization
 const worldInit = require('./systems/world-init.js');

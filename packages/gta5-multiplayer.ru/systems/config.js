@@ -1,4 +1,6 @@
-var mysql = require('./mysql.js');
+"use strict";
+
+const { pool } = require('./mysql.js');
 
 let configure = module.exports;
 
@@ -101,7 +103,7 @@ configure.jobs_1_markers[9] = mp.markers.new(30, new mp.Vector3(parseFloat(-114.
 configure.jobs_1_markers[9].setColor(255, 247, 0, 255);
 configure.jobs_1_colshapes[9] = mp.colshapes.newRectangle(parseFloat(-114.25918579101562), parseFloat(-1024.926025390625), 1, 1);
 
-mysql.connection.query('SELECT * FROM houses', [], function (error, results, fields) {
+pool.query('SELECT * FROM houses', [], function (error, results, fields) {
 	for(let i = 0; i < results.length; i++) {
 		let status_busy = (parseInt(results[i].state) == 1) ? 1 : 2;
 		configure.housesblips[i] = mp.blips.new(40, new mp.Vector3(parseFloat(results[i].pos_x), parseFloat(results[i].pos_y), parseFloat(results[i].pos_z)),

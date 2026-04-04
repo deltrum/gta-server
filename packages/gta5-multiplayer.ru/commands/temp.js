@@ -1,12 +1,15 @@
+"use strict";
+
 module.exports =
 {
 //---------------------------------------- [ Остальные команды ] ----------------------------------------
 	"test2" : (player,args) =>
-	{	
-		player.call("taskScenario", args[1], parseInt(args[2]))
-	},	
+	{
+		player.call("taskScenario", args[1], parseInt(args[2]));
+	},
 	"lock" : (player, args) => {
-		if ((vehicle = player.vehicle) == undefined) 
+		const vehicle = player.vehicle;
+		if (vehicle === undefined) 
 		{
 		var NearbyVehicles = [];
 	    	mp.vehicles.forEachInRange(player.position, 2.5, (NerbyVehicle) => {
